@@ -1,4 +1,4 @@
-import { Given, When, Then, And, Before } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before } from "cypress-cucumber-preprocessor/steps"
 import { PaginaInicial } from "../pages/pagina-inicial"
 
 const paginaInicial = new PaginaInicial()
@@ -6,14 +6,14 @@ const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 let nextPage
 let previousPage
 
-Before(function () {
-    cy.viewport("macbook-13")
-})
+// Before(function () {
+//     cy.viewport("macbook-13")
+// })
 
-Before({ tags: "@testeComBotoes" }, function () {
-    nextPage = () => cy.get(paginaInicial.buttonNextPage).click()
-    previousPage = () => cy.get(paginaInicial.buttonPreviousPage).click()
-})
+// Before({ tags: "@testeComBotoes" }, function () {
+//     nextPage = () => cy.get(paginaInicial.buttonNextPage).click()
+//     previousPage = () => cy.get(paginaInicial.buttonPreviousPage).click()
+// })
 
 Given("que visitei a página inicial", function () {
     cy.visit('/')
@@ -152,7 +152,7 @@ Then('o site deverá ir para a página 02', function () {
     cy.get(paginaInicial.itemPaginacaoAtual).should('have.text', "2 de 3")
 })
 
-Then('mostrar as informações corretas dos usuários da página 02 as informações corretas dos usuários da página 02', function () {
+Then('o site deverá mostrar as informações corretas dos usuários da página 02', function () {
     cy.get(paginaInicial.itensListaUsuarios).then(function (lista) {
         for (let item of lista) {
             cy.wrap(item).should('contain', "Página 02")
