@@ -3,9 +3,7 @@ import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/
 import { CriarUsuario } from '../pages/criar-usuario';
 
 const criarUsuario = new CriarUsuario()
-const apiUrl = Cypress.env("apiUrl")
 const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
-let user
 const userFaker = { name: "teste" + faker.person.firstName(), email: faker.internet.email().toLowerCase() }
 let usuarioCriadoPreviamente
 
@@ -19,27 +17,16 @@ Before(function () {
     cy.intercept("POST", "/api/v1//users").as("tentativaDeCriarUsuario")
 })
 
+Before({ tags: "@emailJaExistente" }, function () {
+    cy.intercept("POST", "/api/v1/users").as("criarUsuario")
+})
+
 Given('que acessei a página de cadastrar usuários', function () {
     cy.visit('/users/novo')
 })
 
 Given('que não digito nada no campo de nome e no de email', function () {
 
-})
-
-When('clico no botão de cadastrar usuário', function () {
-    criarUsuario.clicarBotaoSalvar()
-})
-
-Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatório', function () {
-    cy.contains("O campo nome é obrigatório.").should("exist")
-    cy.contains("O campo e-mail é obrigatório.").should("exist")
-})
-
-Then('não deve aparecer uma mensagem de sucesso', function () {
-    cy.contains("Usuário salvo com sucesso!").should("not.exist")
-
-    postRequest().should("not.exist")
 })
 
 Given('que digito um email válido', function () {
@@ -50,17 +37,8 @@ Given('que não digito nada no campo de nome', function () {
 
 })
 
-Then('deve aparecer uma mensagem informando que o campo de nome é obrigatório', function () {
-    cy.contains("O campo nome é obrigatório.").should("exist")
-    cy.contains("O campo e-mail é obrigatório.").should("not.exist")
-})
-
 Given('que digito um nome com menos de 04 caracteres', function () {
     cy.get(criarUsuario.inputNome).type("abc")
-})
-
-Then('deve aparecer a mensagem {string}', function (mensagem) {
-    cy.contains(mensagem).should("exist")
 })
 
 Given('que digito um nome com mais de 100 caracteres', function () {
@@ -107,14 +85,6 @@ Given('que digito um email sem conter o ".com" ou ".*" ao final', function () {
     cy.get(criarUsuario.inputEmail).type("email@gmail")
 })
 
-Before({ tags: "@emailJaExistente" }, function () {
-    cy.intercept("POST", "/api/v1/users").as("criarUsuario")
-})
-
-After({ tags: "@emailJaExistente" }, function () {
-    cy.deleteUserApi(usuarioCriadoPreviamente.id)
-})
-
 Given('que eu tenha o email de um usuário que já existe', function () {
     cy.createUserApi().then(function (body) {
         usuarioCriadoPreviamente = body
@@ -123,7 +93,39 @@ Given('que eu tenha o email de um usuário que já existe', function () {
 
 Given('que digito o email do usuário que já existe', function () {
     cy.get(criarUsuario.inputEmail).type(usuarioCriadoPreviamente.email)
-    // cy.wait("@criarUsuario")
+})
+
+When('clico no botão de cadastrar usuário', function () {
+    criarUsuario.clicarBotaoSalvar()
+})
+
+When('clico no botão de cancelar da modal de erro', function () {
+    cy.get("[aria-modal='true'] button").contains("Cancelar").click()
+})
+
+
+Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatório', function () {
+    cy.contains("O campo nome é obrigatório.").should("exist")
+    cy.contains("O campo e-mail é obrigatório.").should("exist")
+})
+
+Then('não deve aparecer uma mensagem de sucesso', function () {
+    cy.contains("Usuário salvo com sucesso!").should("not.exist")
+
+    postRequest().should("not.exist")
+})
+
+Then('deve aparecer uma mensagem informando que o campo de nome é obrigatório', function () {
+    cy.contains("O campo nome é obrigatório.").should("exist")
+    cy.contains("O campo e-mail é obrigatório.").should("not.exist")
+})
+
+Then('deve aparecer a mensagem {string}', function (mensagem) {
+    cy.contains(mensagem).should("exist")
+})
+
+After({ tags: "@emailJaExistente" }, function () {
+    cy.deleteUserApi(usuarioCriadoPreviamente.id)
 })
 
 Then('deve aparecer uma modal com o título sendo {string}', function (titulo) {
@@ -136,10 +138,6 @@ Then('a modal deve conter um botão de cancelar', function () {
 
 Then('a modal deve conter um botão com um x', function () {
     cy.get("[aria-modal='true'] button").contains("x").should("exist")
-})
-
-When('clico no botão de cancelar da modal de erro', function () {
-    cy.get("[aria-modal='true'] button").contains("Cancelar").click()
 })
 
 Then('a modal deve ser fechada', function () {
@@ -172,8 +170,3 @@ Then('a mensagem da API deve informar corretamente que o usuário já existe', f
         expect(res.response.body).to.deep.equal({ error: "User already exists." })
     })
 })
-
-//     describe("Tentativa de cadastro sem sucesso", function () {
-//          describe('Cadastro com email já existente', function () {
-// })
-// })
