@@ -6,20 +6,20 @@ const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 const apiUrl = Cypress.env("apiUrl")
 let user
 
-Before(function () {
-    cy.viewport("macbook-13")
-    cy.intercept("GET", "/api/v1/search?value=*").as("getPesquisa")
-})
+// Before(function () {
+//     cy.viewport("macbook-13")
+//     cy.intercept("GET", "/api/v1/search?value=*").as("getPesquisa")
+// })
 
-Before({ tags: "@criacaoDeUsuario" }, function () {
-    cy.createUserApi().then(function (body) {
-        user = body
-    })
-})
+// Before({ tags: "@criacaoDeUsuario" }, function () {
+//     cy.createUserApi().then(function (body) {
+//         user = body
+//     })
+// })
 
-After({ tags: "@criacaoDeUsuario" }, function () {
-    cy.deleteUserApi(user.id)
-})
+// After({ tags: "@criacaoDeUsuario" }, function () {
+//     cy.deleteUserApi(user.id)
+// })
 
 Given('que acessei a página inicial do site', function () {
     cy.visit("/")

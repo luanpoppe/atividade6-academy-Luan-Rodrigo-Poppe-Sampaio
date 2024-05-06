@@ -2,7 +2,7 @@
 
 Funcionalidade: Acessar página de detalhes de um usuário
     
-    @@deletarUsuario
+    @deletarUsuario
     Cenário: Ver detalhes de um usuário existente
         Dado que visitei a página inicial
         E que tenho as informações de um usuário existente
