@@ -12,14 +12,18 @@ function postRequest() {
     return cy.get("@tentativaDeCriarUsuario")
 }
 
-Before(function () {
-    cy.viewport("macbook-13")
-    cy.intercept("POST", "/api/v1//users").as("tentativaDeCriarUsuario")
-})
+// Before(function () {
+//     cy.viewport("macbook-13")
+//     cy.intercept("POST", "/api/v1//users").as("tentativaDeCriarUsuario")
+// })
 
-Before({ tags: "@emailJaExistente" }, function () {
-    cy.intercept("POST", "/api/v1/users").as("criarUsuario")
-})
+// Before({ tags: "@emailJaExistente" }, function () {
+//     cy.intercept("POST", "/api/v1/users").as("criarUsuario")
+// })
+
+// After({ tags: "@emailJaExistente" }, function () {
+//     cy.deleteUserApi(usuarioCriadoPreviamente.id)
+// })
 
 Given('que acessei a página de cadastrar usuários', function () {
     cy.visit('/users/novo')
@@ -122,10 +126,6 @@ Then('deve aparecer uma mensagem informando que o campo de nome é obrigatório'
 
 Then('deve aparecer a mensagem {string}', function (mensagem) {
     cy.contains(mensagem).should("exist")
-})
-
-After({ tags: "@emailJaExistente" }, function () {
-    cy.deleteUserApi(usuarioCriadoPreviamente.id)
 })
 
 Then('deve aparecer uma modal com o título sendo {string}', function (titulo) {
