@@ -1,16 +1,27 @@
-import { Before } from "cypress-cucumber-preprocessor/steps/index"
+import { After, Before } from "cypress-cucumber-preprocessor/steps"
 import { PaginaInicial } from "../pages/pagina-inicial"
 
 const paginaInicial = new PaginaInicial()
 const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 const apiUrl = Cypress.env("apiUrl")
+let user
 
 Before(function () {
     cy.viewport("macbook-13")
     cy.intercept("GET", "/api/v1/search?value=*").as("getPesquisa")
 })
 
-Given('que acessei a página de cadastrar usuários', function () {
+Before({ tags: "@criacaoDeUsuario" }, function () {
+    cy.createUserApi().then(function (body) {
+        user = body
+    })
+})
+
+After({ tags: "@criacaoDeUsuario" }, function () {
+    cy.deleteUserApi(user.id)
+})
+
+Given('que acessei a página inicial do site', function () {
     cy.visit("/")
 })
 
@@ -22,145 +33,146 @@ Then('ela deve estar habilitada', function () {
     cy.get(paginaInicial.inputPesquisar).should("be.enabled")
 })
 
-//   it('Ao digitar algo no campo de busca, uma pesquisa é feita', function () {
-//     paginaInicial.pesquisarUsuario("aa")
+When('faço uma pesquisa utilizando o campo de pesquisa', function () {
+    paginaInicial.pesquisarUsuario("aa")
+})
 
-//     cy.wait("@getPesquisa").should("exist")
-//   })
+Then('uma pesquisa deve ser realizada pelo site', function () {
+    cy.wait("@getPesquisa").should("exist")
+})
 
-//   it('Não é realizada uma requisição de pesquisa se não for digitado algo no campo de pesquisa', function () {
-//     cy.get("@getPesquisa").should("not.exist")
-//   })
+Given('não digitei nada no campo de pesquisa', function () {
 
-//   it('Botão de resetar valor pesquisado só aparece após pesquisar algo', function () {
-//     cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("be.empty")
-//     paginaInicial.pesquisarUsuario("aa")
+})
 
-//     cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("not.be.empty")
-//   })
+Then('nenhuma busca à API de pesquisa é feita', function () {
+    cy.get("@getPesquisa").should("not.exist")
+})
 
-//   it('Botão de resetar valor pesquisado funciona corretamente', function () {
-//     paginaInicial.pesquisarUsuario("aa")
-//     cy.get(paginaInicial.inputPesquisar).should("have.value", "aa")
-//     cy.get('.sc-iGgWBj.cvYpuE').eq(1).click()
-//     cy.get(paginaInicial.inputPesquisar).should("not.have.value")
-//   })
+Then('o botão de resetar o valor pesquisado não deve existir ainda', function () {
+    cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("be.empty")
+})
 
-//   it('Botão de resetar pesquisa realiza uma requisição a todos os usuários', function () {
-//     cy.intercept("GET", "/api/v1/users").as("getTodosUsuarios")
+Then('o botão de resetar o valor pesquisado deve aparecer', function () {
+    cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("not.be.empty")
+})
 
-//     paginaInicial.pesquisarUsuario("aa")
-//     cy.get("@getTodosUsuarios").should("not.exist")
-//     cy.get('.sc-iGgWBj.cvYpuE').eq(1).click()
+Given('que fiz uma pesquisa utilizando o campo de pesquisa', function () {
+    cy.intercept("GET", "/api/v1/users").as("getTodosUsuarios")
+    paginaInicial.pesquisarUsuario("aa")
+    cy.get(paginaInicial.inputPesquisar).should("have.value", "aa")
+    cy.get("@getTodosUsuarios").should("not.exist")
+})
 
-//     cy.wait("@getTodosUsuarios").should("exist")
+When('clico no botão de resetar o campo de pesquisa', function () {
+    cy.get('.sc-iGgWBj.cvYpuE').eq(1).click()
+})
 
-//   })
+Then('o valor do campo de pesquisa deverá ser resetado', function () {
+    cy.get(paginaInicial.inputPesquisar).should("not.have.value")
+})
 
-//   it('Apagar o valor do campo de pesquisa realiza uma requisição a todos os usuários', function () {
-//     cy.intercept("GET", "/api/v1/users").as("getTodosUsuarios")
+Then('uma pesquisa por todos os usuários deve ser feita', function () {
+    cy.wait("@getTodosUsuarios").should("exist")
+})
 
-//     paginaInicial.pesquisarUsuario("aa")
-//     cy.get("@getTodosUsuarios").should("not.exist")
-//     paginaInicial.pesquisarUsuario("{backspace}{backspace}")
+When('apago manualmente o valor digitado no campo de pesquisa', function () {
+    cy.get("@getTodosUsuarios").should("not.exist")
+    paginaInicial.pesquisarUsuario("{backspace}{backspace}")
+})
 
-//     cy.wait("@getTodosUsuarios").should("exist")
+When('pesquiso por um usuário que tenho certeza que não existe', function () {
+    const nomeASerPesquisado = "usuarioNaoExistenteComCertezaNaoExisteEsseUser@gmail.com"
 
-//   })
+    // Garantindo que o usuário que irei pesquisar não existe, e caso exista, deleto ele antes de realizar a pesquisa
+    cy.request(apiUrl + "/users").then(function (resposta) {
+        const usersThatMatch = resposta.body.filter((usuario) => usuario.email == nomeASerPesquisado)
+        const botaoCriarNovoUsuario = ".sc-koXPp.csBRDe " + ".sc-bmzYkS.dmSxaj"
 
-//   it('Pesquisar por usuário que não existe mostra tela correspondente', function () {
-//     const nomeASerPesquisado = "usuarioNaoExistenteComCertezaNaoExisteEsseUser@gmail.com"
+        if (usersThatMatch.length > 0) cy.deleteUserApi(usersThatMatch[0].id)
+        paginaInicial.pesquisarUsuario(nomeASerPesquisado)
+        cy.wait("@getPesquisa")
+    })
+})
 
-//     // Garantindo que o usuário que irei pesquisar não existe, e caso exista, deleto ele antes de realizar a pesquisa
-//     cy.request(apiUrl + "/users").then(function (resposta) {
-//       const usersThatMatch = resposta.body.filter((usuario) => usuario.email == nomeASerPesquisado)
-//       const botaoCriarNovoUsuario = ".sc-koXPp.csBRDe " + ".sc-bmzYkS.dmSxaj"
+Then('deverá aparecer a mensagem {string} na tela', function (mensagem) {
+    cy.get("h3").should('have.text', mensagem)
+})
 
-//       if (usersThatMatch.length > 0) {
-//         cy.deleteUserApi(usersThatMatch[0].id)
-//       }
+Then('deverá aparecer um botão para cadastrar novo usuário na tela', function () {
+    cy.get(botaoCriarNovoUsuario + " p").should('have.text', "Cadastre um novo usuário")
+})
 
-//       paginaInicial.pesquisarUsuario(nomeASerPesquisado)
-//       cy.wait("@getPesquisa")
+Then('não deve mostrar nenhum usuário cadastrado na tela', function () {
+    cy.get(paginaInicial.itensListaUsuarios).should("not.exist")
+})
 
-//       cy.get("h3").should('have.text', "Ops! Não existe nenhum usuário para ser exibido.")
-//       cy.get(botaoCriarNovoUsuario + " p").should('have.text', "Cadastre um novo usuário")
+Then('o botão de novo cadastro botão deve redirecionar à página de cadastrar novo usuário ao ser clicado', function () {
+    cy.get(botaoCriarNovoUsuario).click()
+    cy.url().should("equal", baseUrl + "/users/novo")
+})
 
-//       cy.get(paginaInicial.itensListaUsuarios).should("not.exist")
+When('pesquiso pelo nome de um usuário que tenho certeza que existe', function () {
+    paginaInicial.pesquisarUsuario(user.name)
+})
 
-//       cy.get(botaoCriarNovoUsuario).click()
-//       cy.url().should("equal", baseUrl + "/users/novo")
-//     })
-//   })
+Then('deverá aparecer na tela informações sobre o usuário pesquisado', function () {
+    // Se o resultado da pesquisa trouxer 6 ou menos usuários, todos aparecerão na página, e assim busco nos elementos da página. Este será o cenário mais comum.
+    // Se por acaso o resultado trouxer mais de 6 usuários, o usuário criado por estar em outra página que não a primeira, tornando inviável buscar página a página.
+    // Nesse segundo cenário, a solução que encontrei foi checar que o body da resposta da API traz o usuário criado na sua lista de usuários pesquisados.
+    cy.wait("@getPesquisa").then(function (res) {
+        cy.get(paginaInicial.itensListaUsuarios).should("have.length.above", 0)
 
-//   describe('Testes com criação de usuários', function () {
-//     let user
+        const usuariosPesquisados = res.response.body
 
-//     beforeEach(function () {
-//       cy.createUserApi().then(function (body) {
-//         user = body
-//       })
-//     })
+        if (usuariosPesquisados.length <= 6) {
+            cy.get(paginaInicial.itensListaUsuarios).should("contain.text", user.name)
 
-//     afterEach(function () {
-//       cy.deleteUserApi(user.id)
-//     })
+            // Garantindo que mesmo que o email seja muito grande e não apareça todo na tela, a parte que aparece é uma "sub-parte" do email criado
+            cy.get('[data-test="userDataEmail"]').invoke("text").then((texto) => {
+                const emailsSeparados = texto.split("E-mail: ").toString().split("...").toString().split(",")
+                const isEmailInPage = emailsSeparados.some((item) => user.name.includes(item))
 
-//     it('Pesquisar por nome traz resultado esperado', function () {
-//       // Se o resultado da pesquisa trouxer 6 ou menos usuários, todos aparecerão na página, e assim busco nos elementos da página. Este será o cenário mais comum.
-//       // Se por acaso o resultado trouxer mais de 6 usuários, o usuário criado por estar em outra página que não a primeira, tornando inviável buscar página a página.
-//       // Nesse segundo cenário, a solução que encontrei foi checar que o body da resposta da API traz o usuário criado na sua lista de usuários pesquisados.
-//       paginaInicial.pesquisarUsuario(user.name)
-//       cy.wait("@getPesquisa").then(function (res) {
-//         cy.get(paginaInicial.itensListaUsuarios).should("have.length.above", 0)
+                expect(isEmailInPage).to.equal(true)
+            })
+        }
+        else {
+            const isUserCreatedInResponse = usuariosPesquisados.some((usuario) => usuario.name == user.name)
+            expect(isUserCreatedInResponse).to.equal(true)
+            cy.get(paginaInicial.buttonNextPage).should("be.enabled")
+        }
+    })
+})
 
-//         const usuariosPesquisados = res.response.body
+When('pesquiso pelo email de um usuário que tenho certeza que existe', function () {
+    paginaInicial.pesquisarUsuario(user.email)
+    cy.wait("@getPesquisa")
+})
 
-//         if (usuariosPesquisados.length <= 6) {
-//           cy.get(paginaInicial.itensListaUsuarios).should("contain.text", user.name)
+Then('deverá aparecer na tela informações sobre o usuário pesquisado pelo email', function () {
+    cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
+    cy.get(paginaInicial.itensListaUsuarios).should("contain.text", user.name)
 
-//           // Garantindo que mesmo que o email seja muito grande e não apareça todo na tela, a parte que aparece é uma "sub-parte" do email criado
-//           cy.get('[data-test="userDataEmail"]').invoke("text").then((texto) => {
-//             const emailsSeparados = texto.split("E-mail: ").toString().split("...").toString().split(",")
-//             const isEmailInPage = emailsSeparados.some((item) => user.name.includes(item))
+    // Garantindo que mesmo que o email seja muito grande e não apareça todo na tela, a parte que aparece é uma "sub-parte" do email criado
+    cy.get('[data-test="userDataEmail"]').invoke("text").then((texto) => {
+        const emailsSeparados = texto.split("E-mail: ").toString().split("...").toString().split(",").filter((item) => item != "")
+        const isEmailInPage = emailsSeparados.some((item) => user.email.includes(item))
 
-//             expect(isEmailInPage).to.equal(true)
-//           })
-//         }
-//         else {
-//           const isUserCreatedInResponse = usuariosPesquisados.some((usuario) => usuario.name == user.name)
-//           expect(isUserCreatedInResponse).to.equal(true)
-//           cy.get(paginaInicial.buttonNextPage).should("be.enabled")
-//         }
-//       })
-//     })
+        expect(isEmailInPage).to.equal(true)
+    })
+})
 
-//     it('Pesquisar por email traz resultado esperado', function () {
-//       paginaInicial.pesquisarUsuario(user.email)
-//       cy.wait("@getPesquisa")
+When('clico no botão de ver detalhes do usuário', function () {
+    cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
+    cy.get("#userDataDetalhe").click()
+})
 
-//       cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
-//       cy.get(paginaInicial.itensListaUsuarios).should("contain.text", user.name)
+Then('deverá abrir a página de detalhes do usuário', function () {
+    cy.url().should("equal", `${baseUrl}/users/${user.id}`)
+})
 
-//       // Garantindo que mesmo que o email seja muito grande e não apareça todo na tela, a parte que aparece é uma "sub-parte" do email criado
-//       cy.get('[data-test="userDataEmail"]').invoke("text").then((texto) => {
-//         const emailsSeparados = texto.split("E-mail: ").toString().split("...").toString().split(",").filter((item) => item != "")
-//         const isEmailInPage = emailsSeparados.some((item) => user.email.includes(item))
-
-//         expect(isEmailInPage).to.equal(true)
-//       })
-//     })
-
-//     it('Botão de ver detalhes leva à página correta do usuário', function () {
-//       paginaInicial.pesquisarUsuario(user.email)
-//       cy.wait("@getPesquisa")
-
-//       cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
-//       cy.get("#userDataDetalhe").click()
-
-//       cy.url().should("equal", `${baseUrl}/users/${user.id}`)
-//       cy.get("[name='id']").should('have.value', user.id)
-//       cy.get("[name='name']").should('have.value', user.name)
-//       cy.get("[name='email']").should('have.value', user.email)
-//     })
-//   })
+Then('conter as informações corretas sobre nome, email e id do usuário', function () {
+    cy.get("[name='id']").should('have.value', user.id)
+    cy.get("[name='name']").should('have.value', user.name)
+    cy.get("[name='email']").should('have.value', user.email)
+})
