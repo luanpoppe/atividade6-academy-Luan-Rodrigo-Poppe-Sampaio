@@ -49,7 +49,6 @@ Funcionalidade: Edição de usuário
         E deve aparecer a mensagem de sucesso na página "Informações atualizadas com sucesso!"
         E o usuário deve ser redirecionado à página inicial do site
     
-    @only
     Cenário: Após editar as informações de usuário, a página de detalhes do usuário deve mostrar as novas informações corretamente
         E que cliquei no botão de editar
         E que modifiquei os valores dos campos de nome e email

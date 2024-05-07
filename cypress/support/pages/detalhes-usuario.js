@@ -7,7 +7,22 @@ export class DetalhesUsuario {
     getButtonEditar = () => cy.contains("Editar")
     getButtonCancelar = () => cy.contains("Cancelar")
 
-
     buttonVoltar = "[href='/users']"
     buttonHome = "[href='/']"
+
+    limparCampoNome() {
+        cy.get(this.inputName).clear()
+    }
+
+    limparCampoEmail() {
+        cy.get(this.inputEmail).clear()
+    }
+
+    digitarCampoNome(texto) {
+        cy.get(this.inputName).type(texto)
+    }
+
+    digitarCampoEmail(texto) {
+        cy.get(this.inputEmail).type(texto)
+    }
 }

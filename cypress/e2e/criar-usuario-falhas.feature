@@ -1,5 +1,6 @@
 # language: pt
 
+@criarUsuarioFile
 Funcionalidade: Validação ao criar usuários
 
     Contexto: Acessar a página de cadastro de usuários
