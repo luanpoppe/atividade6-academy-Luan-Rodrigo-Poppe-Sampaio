@@ -119,7 +119,7 @@ Funcionalidade: Validação ao criar usuários
         E que digito um nome válido
         E que digito o email do usuário que já existe
         Quando clico no botão de cadastrar usuário
-        Então o campo de nome não deve ser resetados
+        Então o campo de nome não deve ser resetado
         E o campo de email não deve ser resetado
 
     @emailJaExistente

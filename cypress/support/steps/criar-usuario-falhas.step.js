@@ -152,7 +152,7 @@ Then('clico no botão de "x" da modal de erro', function () {
     cy.get("[aria-modal='true'] button").contains("x").click()
 })
 
-Then('o campo de nome não deve ser resetados', function () {
+Then('o campo de nome não deve ser resetado', function () {
     cy.get(criarUsuario.inputNome).should("have.value", userFaker.name)
 })
 

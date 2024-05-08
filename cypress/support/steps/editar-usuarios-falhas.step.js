@@ -2,6 +2,7 @@ import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/
 import { DetalhesUsuario } from "../pages/detalhes-usuario"
 
 let user
+let usuarioCriadoPreviamente
 const pageDetalhesUsuario = new DetalhesUsuario()
 const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 
@@ -14,13 +15,21 @@ After(function () {
     cy.deleteUserApi(user.id)
 })
 
+Before({ tags: "@emailJaExistente" }, function () {
+    cy.intercept("POST", "/api/v1/users").as("criarUsuario")
+})
+
+After({ tags: "@emailJaExistente" }, function () {
+    cy.deleteUserApi(usuarioCriadoPreviamente.id)
+})
+
 Given('que existe um usuário', function () {
     cy.createUserApi().then(function (body) {
         user = body
     })
 })
 
-Given('acesso a página de detalhes deste usuário', function () {
+Given('que acessei a página de detalhes deste usuário', function () {
     cy.visit("/users/" + user.id)
 })
 
@@ -97,116 +106,30 @@ When('passo um email com mais de 60 caracteres para o campo de email', function 
     pageDetalhesUsuario.digitarCampoEmail(valorEmail)
 })
 
-
-
-
-
-
-
-
-// ------------------------------------ //
-
-Given('que acessei a página de cadastrar usuários', function () {
-    cy.visit('/users/novo')
+When('passo um email sem conter o @ para o campo de email', function () {
+    pageDetalhesUsuario.limparCampoEmail()
+    pageDetalhesUsuario.digitarCampoEmail("emailgmail.com")
 })
 
-Given('que não digito nada no campo de nome e no de email', function () {
-
+When('passo um email sem caracteres após o símbolo de @ para o campo de email', function () {
+    pageDetalhesUsuario.limparCampoEmail()
+    pageDetalhesUsuario.digitarCampoEmail("email@")
 })
 
-Given('que digito um email válido', function () {
-    cy.get(criarUsuario.inputEmail).type(userFaker.email)
+When('passo um email sem caracteres após o símbolo de @ para o campo de email', function () {
+    pageDetalhesUsuario.limparCampoEmail()
+    pageDetalhesUsuario.digitarCampoEmail("email@gmail")
 })
 
-Given('que não digito nada no campo de nome', function () {
-
-})
-
-Given('que digito um nome com menos de 04 caracteres', function () {
-    cy.get(criarUsuario.inputNome).type("abc")
-})
-
-Given('que digito um nome com mais de 100 caracteres', function () {
-    let valorNome = ""
-    while (valorNome.length < 101) {
-        valorNome += "a"
-    }
-    cy.get(criarUsuario.inputNome).type(valorNome)
-})
-
-Given('que digito um nome contendo números', function () {
-    cy.get(criarUsuario.inputNome).type("NomeUsuario123456")
-})
-
-Given('que digito um nome contendo símbolos', function () {
-    cy.get(criarUsuario.inputNome).type("NomeUsuario$")
-})
-
-Given('que digito um nome válido', function () {
-    cy.get(criarUsuario.inputNome).type(userFaker.name)
-})
-
-Given('que não digito nada no campo de email', function () {
-
-})
-
-Given('que digito um email contendo mais de 60 caracteres', function () {
-    let valorEmail = "abc@gmail.com."
-    while (valorEmail.length < 61) {
-        valorEmail += "a"
-    }
-    cy.get(criarUsuario.inputEmail).type(valorEmail)
-})
-
-Given('que digito um email sem conter o @ no campo de email', function () {
-    cy.get(criarUsuario.inputEmail).type("emailgmail.com")
-})
-
-Given('que digito um email sem caracteres após o símbolo de @', function () {
-    cy.get(criarUsuario.inputEmail).type("email@")
-})
-
-Given('que digito um email sem conter o ".com" ou ".*" ao final', function () {
-    cy.get(criarUsuario.inputEmail).type("email@gmail")
-})
-
-Given('que eu tenha o email de um usuário que já existe', function () {
+Given('que eu tenha o email de outro usuário que já existe', function () {
     cy.createUserApi().then(function (body) {
         usuarioCriadoPreviamente = body
     })
 })
 
-Given('que digito o email do usuário que já existe', function () {
-    cy.get(criarUsuario.inputEmail).type(usuarioCriadoPreviamente.email)
-})
-
-When('clico no botão de cadastrar usuário', function () {
-    criarUsuario.clicarBotaoSalvar()
-})
-
-When('clico no botão de cancelar da modal de erro', function () {
-    cy.get("[aria-modal='true'] button").contains("Cancelar").click()
-})
-
-
-Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatório', function () {
-    cy.contains("O campo nome é obrigatório.").should("exist")
-    cy.contains("O campo e-mail é obrigatório.").should("exist")
-})
-
-Then('não deve aparecer uma mensagem de sucesso', function () {
-    cy.contains("Usuário salvo com sucesso!").should("not.exist")
-
-    postRequest().should("not.exist")
-})
-
-Then('deve aparecer uma mensagem informando que o campo de nome é obrigatório', function () {
-    cy.contains("O campo nome é obrigatório.").should("exist")
-    cy.contains("O campo e-mail é obrigatório.").should("not.exist")
-})
-
-Then('deve aparecer a mensagem {string}', function (mensagem) {
-    cy.contains(mensagem).should("exist")
+When('passo o email do outro usuário já existente para o campo de email', function () {
+    pageDetalhesUsuario.limparCampoEmail()
+    pageDetalhesUsuario.digitarCampoEmail(usuarioCriadoPreviamente.email)
 })
 
 Then('deve aparecer uma modal com o título sendo {string}', function (titulo) {
@@ -221,33 +144,37 @@ Then('a modal deve conter um botão com um x', function () {
     cy.get("[aria-modal='true'] button").contains("x").should("exist")
 })
 
+When('clico no botão de cancelar da modal de erro', function () {
+    cy.get("[aria-modal='true'] button").contains("Cancelar").click()
+})
+
 Then('a modal deve ser fechada', function () {
     cy.get("[aria-modal='true']").should("not.exist")
 })
 
-Then('devo continuar na página de cadastrar novo usuário', function () {
-    cy.url().should("equal", `${baseUrl}/users/novo`)
+Then('devo continuar na página de detalhes do usuário sendo editado', function () {
+    cy.url().should("equal", `${baseUrl}/users/${user.id}`)
 })
 
 Then('clico no botão de "x" da modal de erro', function () {
     cy.get("[aria-modal='true'] button").contains("x").click()
 })
 
-Then('o campo de nome não deve ser resetados', function () {
-    cy.get(criarUsuario.inputNome).should("have.value", userFaker.name)
+Then('o campo de nome não deve ter seu valor resetado', function () {
+    cy.get(pageDetalhesUsuario.inputName).should("have.value", user.name)
 })
 
-Then('o campo de email não deve ser resetado', function () {
-    cy.get(criarUsuario.inputEmail).should("have.value", usuarioCriadoPreviamente.email)
+Then('o campo de email não deve ter seu valor resetado', function () {
+    cy.get(pageDetalhesUsuario.inputEmail).should("have.value", usuarioCriadoPreviamente.email)
 })
 
 Then('o botão de salvar deve estar habilitado', function () {
-    cy.get(criarUsuario.buttonSalvar).should('be.enabled')
+    pageDetalhesUsuario.getButtonSalvar().should('be.enabled')
 })
 
-Then('a mensagem da API deve informar corretamente que o usuário já existe', function () {
-    cy.wait("@criarUsuario").then(function (res) {
+Then('a mensagem da API deve dizer corretamente que o usuário já existe', function () {
+    cy.wait("@putRequest").then(function (res) {
         expect(res.response.statusCode).to.equal(422)
-        expect(res.response.body).to.deep.equal({ error: "User already exists." })
+        expect(res.response.body).to.deep.equal({ error: "E-mail already in use." })
     })
 })
