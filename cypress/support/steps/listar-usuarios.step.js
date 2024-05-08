@@ -1,4 +1,4 @@
-import { Given, When, Then, Before } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before } from "@badeball/cypress-cucumber-preprocessor"
 import { PaginaInicial } from "../pages/pagina-inicial"
 
 const paginaInicial = new PaginaInicial()
@@ -6,14 +6,14 @@ const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 let nextPage
 let previousPage
 
-// Before(function () {
-//     cy.viewport("macbook-13")
-// })
+Before(function () {
+    cy.viewport("macbook-13")
+})
 
-// Before({ tags: "@testeComBotoes" }, function () {
-//     nextPage = () => cy.get(paginaInicial.buttonNextPage).click()
-//     previousPage = () => cy.get(paginaInicial.buttonPreviousPage).click()
-// })
+Before({ tags: "@testeComBotoes" }, function () {
+    nextPage = () => cy.get(paginaInicial.buttonNextPage).click()
+    previousPage = () => cy.get(paginaInicial.buttonPreviousPage).click()
+})
 
 Given("que visitei a página inicial", function () {
     cy.visit('/')
@@ -90,7 +90,7 @@ When('clico no botão de cadastrar novo usuário do header do site', function ()
 
 
 
-Then('ao acessar a página /users o total de páginas deverá ser 01', function () {
+Then('ao acessar a página de usuários o total de páginas deverá ser 01', function () {
     cy.get(paginaInicial.itemPaginacaoAtual).should("have.text", "1 de 1")
 })
 

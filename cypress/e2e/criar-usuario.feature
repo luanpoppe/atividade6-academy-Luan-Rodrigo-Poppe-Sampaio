@@ -38,7 +38,7 @@ Funcionalidade: Criar usuários
     
     Cenário: Cadastrar um usuário com o nome contendo 04 caracteres deve ser aceito
         Dado que visitei a página de cadastrar usuários
-        Quando digito um email válido e um nome com 4 caracteres
+        Quando digito um email válido e um nome com 04 caracteres
         E clico no botão de cadastrar
         Então o usuário deve ser cadastrado com sucesso
 

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before, After } from "@badeball/cypress-cucumber-preprocessor"
 import { CriarUsuario } from '../pages/criar-usuario';
 
 const criarUsuario = new CriarUsuario()
@@ -7,16 +7,17 @@ const apiUrl = Cypress.env("apiUrl")
 const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 let user
 let userFaker
+let valorNome
 
-// Before(function () {
-//     userFaker = { name: "teste" + faker.person.firstName(), email: faker.internet.email().toLowerCase() }
-//     cy.viewport("macbook-13")
-//     cy.intercept("POST", "/api/v1/users").as("criarUsuario")
-// })
+Before(function () {
+    userFaker = { name: "teste" + faker.person.firstName(), email: faker.internet.email().toLowerCase() }
+    cy.viewport("macbook-13")
+    cy.intercept("POST", "/api/v1/users").as("criarUsuario")
+})
 
-// After(function () {
-//     if (user?.id) cy.deleteUserApi(user.id)
-// })
+After(function () {
+    if (user?.id) cy.deleteUserApi(user.id)
+})
 
 
 
@@ -62,19 +63,17 @@ When('Deverá aparecer uma mensagem na tela com o texto {string}', function (tex
     cy.contains(texto).should("exist")
 })
 
-When('digito um email válido e um nome com {int} caracteres', function (numero) {
-    let valorNome = ""
-    cy.log('valorNome', valorNome)
-    while (valorNome.length < numero) {
+When('digito um email válido e um nome com 100 caracteres', function () {
+    valorNome = ""
+    while (valorNome.length < 100) {
         valorNome += "a"
     }
 
-    cy.log('valorNome', valorNome)
     cy.get(criarUsuario.inputEmail).type(userFaker.email)
     cy.get(criarUsuario.inputNome).type(valorNome)
 })
 
-When('digito um email válido e um nome com 4 caracteres', function () {
+When('digito um email válido e um nome com 04 caracteres', function () {
     let valorNome = "abcd"
 
     cy.get(criarUsuario.inputEmail).type(userFaker.email)

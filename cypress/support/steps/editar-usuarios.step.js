@@ -1,17 +1,17 @@
-import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before, After } from "@badeball/cypress-cucumber-preprocessor"
 import { DetalhesUsuario } from "../pages/detalhes-usuario"
 
 let user
 const pageDetalhesUsuario = new DetalhesUsuario()
 const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
 
-// Before(function () {
-//     cy.viewport("macbook-13")
-// })
+Before(function () {
+    cy.viewport("macbook-13")
+})
 
-// After(function () {
-//     cy.deleteUserApi(user.id)
-// })
+After(function () {
+    cy.deleteUserApi(user.id)
+})
 
 Given('que existe um usuário', function () {
     cy.createUserApi().then(function (body) {

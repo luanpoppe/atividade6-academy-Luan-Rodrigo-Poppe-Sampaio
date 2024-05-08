@@ -1,6 +1,6 @@
 import { DetalhesUsuario } from "../pages/detalhes-usuario"
 import { PaginaInicial } from "../pages/pagina-inicial"
-import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before, After } from "@badeball/cypress-cucumber-preprocessor"
 
 const paginaInicial = new PaginaInicial()
 const baseUrl = "https://rarocrud-frontend-88984f6e4454.herokuapp.com"
@@ -8,14 +8,14 @@ let usuarioCriado
 const detalhesUsuario = new DetalhesUsuario()
 const elementoModal = '[aria-modal="true"]'
 
-// Before(function () {
-//     cy.viewport("macbook-13")
-//     cy.intercept("GET", "/api/v1/users/*",).as("getUserInfo")
-// })
+Before(function () {
+    cy.viewport("macbook-13")
+    cy.intercept("GET", "/api/v1/users/*",).as("getUserInfo")
+})
 
-// After({ tags: "@deletarUsuario" }, function () {
-//     cy.deleteUserApi(usuarioCriado.id)
-// })
+After({ tags: "@deletarUsuario" }, function () {
+    cy.deleteUserApi(usuarioCriado.id)
+})
 
 Given("que visitei a página inicial", function () {
     cy.visit('/')

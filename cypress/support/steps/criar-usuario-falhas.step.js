@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before, After } from "@badeball/cypress-cucumber-preprocessor"
 import { CriarUsuario } from '../pages/criar-usuario';
 
 const criarUsuario = new CriarUsuario()
@@ -12,18 +12,18 @@ function postRequest() {
     return cy.get("@tentativaDeCriarUsuario")
 }
 
-// Before(function () {
-//     cy.viewport("macbook-13")
-//     cy.intercept("POST", "/api/v1//users").as("tentativaDeCriarUsuario")
-// })
+Before(function () {
+    cy.viewport("macbook-13")
+    cy.intercept("POST", "/api/v1//users").as("tentativaDeCriarUsuario")
+})
 
-// Before({ tags: "@emailJaExistente" }, function () {
-//     cy.intercept("POST", "/api/v1/users").as("criarUsuario")
-// })
+Before({ tags: "@emailJaExistente" }, function () {
+    cy.intercept("POST", "/api/v1/users").as("criarUsuario")
+})
 
-// After({ tags: "@emailJaExistente" }, function () {
-//     cy.deleteUserApi(usuarioCriadoPreviamente.id)
-// })
+After({ tags: "@emailJaExistente" }, function () {
+    cy.deleteUserApi(usuarioCriadoPreviamente.id)
+})
 
 Given('que acessei a página de cadastrar usuários', function () {
     cy.visit('/users/novo')
