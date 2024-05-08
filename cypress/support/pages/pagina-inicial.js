@@ -1,7 +1,6 @@
 export class PaginaInicial {
     buttonNextPage = "#paginacaoProximo"
     buttonPreviousPage = "#paginacaoVoltar"
-    buttonPreviousPage = "#paginacaoVoltar"
     buttonNovoUsuario = "[href='/users/novo']"
     buttonHome = "[href='/']"
 

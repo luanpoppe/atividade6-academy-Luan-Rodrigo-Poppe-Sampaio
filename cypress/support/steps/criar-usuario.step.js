@@ -19,8 +19,6 @@ After(function () {
     if (user?.id) cy.deleteUserApi(user.id)
 })
 
-
-
 Given('que visitei a página de cadastrar usuários', function () {
     cy.visit('/users/novo')
 })
@@ -39,8 +37,6 @@ Given('faço uma consulta à API pelos usuários cadastrados', function () {
         user = res.response.body
     })
 })
-
-
 
 
 When('clico no botão de voltar do header', function () {
@@ -89,8 +85,6 @@ When('digito um nome válido e um email com {int} caracteres', function (numero)
     cy.get(criarUsuario.inputEmail).type(valorEmail)
     cy.get(criarUsuario.inputNome).type(userFaker.name)
 })
-
-
 
 
 Then('o usuário deverá ser redirecionado à página inicial do site', function () {

@@ -26,36 +26,8 @@ Given('que acessei a página inicial do site', function () {
     cy.visit("/")
 })
 
-Then('a barra de pesquisa deve existir', function () {
-    cy.get(paginaInicial.inputPesquisar).should("exist")
-})
-
-Then('ela deve estar habilitada', function () {
-    cy.get(paginaInicial.inputPesquisar).should("be.enabled")
-})
-
-When('faço uma pesquisa utilizando o campo de pesquisa', function () {
-    paginaInicial.pesquisarUsuario("aa")
-})
-
-Then('uma pesquisa deve ser realizada pelo site', function () {
-    cy.wait("@getPesquisa").should("exist")
-})
-
 Given('não digitei nada no campo de pesquisa', function () {
 
-})
-
-Then('nenhuma busca à API de pesquisa é feita', function () {
-    cy.get("@getPesquisa").should("not.exist")
-})
-
-Then('o botão de resetar o valor pesquisado não deve existir ainda', function () {
-    cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("be.empty")
-})
-
-Then('o botão de resetar o valor pesquisado deve aparecer', function () {
-    cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("not.be.empty")
 })
 
 Given('que fiz uma pesquisa utilizando o campo de pesquisa', function () {
@@ -65,16 +37,13 @@ Given('que fiz uma pesquisa utilizando o campo de pesquisa', function () {
     cy.get("@getTodosUsuarios").should("not.exist")
 })
 
+
+When('faço uma pesquisa utilizando o campo de pesquisa', function () {
+    paginaInicial.pesquisarUsuario("aa")
+})
+
 When('clico no botão de resetar o campo de pesquisa', function () {
     cy.get('.sc-iGgWBj.cvYpuE').eq(1).click()
-})
-
-Then('o valor do campo de pesquisa deverá ser resetado', function () {
-    cy.get(paginaInicial.inputPesquisar).should("not.have.value")
-})
-
-Then('uma pesquisa por todos os usuários deve ser feita', function () {
-    cy.wait("@getTodosUsuarios").should("exist")
 })
 
 When('apago manualmente o valor digitado no campo de pesquisa', function () {
@@ -96,6 +65,53 @@ When('pesquiso por um usuário que tenho certeza que não existe', function () {
     })
 })
 
+When('pesquiso pelo nome de um usuário que tenho certeza que existe', function () {
+    paginaInicial.pesquisarUsuario(user.name)
+})
+
+When('pesquiso pelo email de um usuário que tenho certeza que existe', function () {
+    paginaInicial.pesquisarUsuario(user.email)
+    cy.wait("@getPesquisa")
+})
+
+When('clico no botão de ver detalhes do usuário', function () {
+    cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
+    cy.get("#userDataDetalhe").click()
+})
+
+
+Then('a barra de pesquisa deve existir', function () {
+    cy.get(paginaInicial.inputPesquisar).should("exist")
+})
+
+Then('ela deve estar habilitada', function () {
+    cy.get(paginaInicial.inputPesquisar).should("be.enabled")
+})
+
+Then('uma pesquisa deve ser realizada pelo site', function () {
+    cy.wait("@getPesquisa").should("exist")
+})
+
+Then('nenhuma busca à API de pesquisa é feita', function () {
+    cy.get("@getPesquisa").should("not.exist")
+})
+
+Then('o botão de resetar o valor pesquisado não deve existir ainda', function () {
+    cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("be.empty")
+})
+
+Then('o botão de resetar o valor pesquisado deve aparecer', function () {
+    cy.get('.sc-iGgWBj.cvYpuE').eq(1).should("not.be.empty")
+})
+
+Then('o valor do campo de pesquisa deverá ser resetado', function () {
+    cy.get(paginaInicial.inputPesquisar).should("not.have.value")
+})
+
+Then('uma pesquisa por todos os usuários deve ser feita', function () {
+    cy.wait("@getTodosUsuarios").should("exist")
+})
+
 Then('deverá aparecer a mensagem {string} na tela', function (mensagem) {
     cy.get("h3").should('have.text', mensagem)
 })
@@ -111,10 +127,6 @@ Then('não deve mostrar nenhum usuário cadastrado na tela', function () {
 Then('o botão de novo cadastro botão deve redirecionar à página de cadastrar novo usuário ao ser clicado', function () {
     cy.get(botaoCriarNovoUsuario).click()
     cy.url().should("equal", baseUrl + "/users/novo")
-})
-
-When('pesquiso pelo nome de um usuário que tenho certeza que existe', function () {
-    paginaInicial.pesquisarUsuario(user.name)
 })
 
 Then('deverá aparecer na tela informações sobre o usuário pesquisado', function () {
@@ -145,11 +157,6 @@ Then('deverá aparecer na tela informações sobre o usuário pesquisado', funct
     })
 })
 
-When('pesquiso pelo email de um usuário que tenho certeza que existe', function () {
-    paginaInicial.pesquisarUsuario(user.email)
-    cy.wait("@getPesquisa")
-})
-
 Then('deverá aparecer na tela informações sobre o usuário pesquisado pelo email', function () {
     cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
     cy.get(paginaInicial.itensListaUsuarios).should("contain.text", user.name)
@@ -161,11 +168,6 @@ Then('deverá aparecer na tela informações sobre o usuário pesquisado pelo em
 
         expect(isEmailInPage).to.equal(true)
     })
-})
-
-When('clico no botão de ver detalhes do usuário', function () {
-    cy.get(paginaInicial.itensListaUsuarios).should("have.length", 1)
-    cy.get("#userDataDetalhe").click()
 })
 
 Then('deverá abrir a página de detalhes do usuário', function () {

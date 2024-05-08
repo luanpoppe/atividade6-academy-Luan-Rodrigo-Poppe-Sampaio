@@ -46,8 +46,6 @@ Given('que tentei acessar a página terminando com {string}', function (url) {
 })
 
 
-
-
 When('clico no botão de ver detalhes do usuário', function () {
     cy.get(paginaInicial.itensListaUsuarios).find("a").click()
 })
@@ -63,7 +61,6 @@ When('clico no botão de cancelar', function () {
 When('clico no botão de "x"', function () {
     cy.get(`${elementoModal} button`).contains("x").click()
 })
-
 
 
 Then('devo ser redirecionado para a página de informações do usuário', function () {

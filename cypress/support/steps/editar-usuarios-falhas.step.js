@@ -11,12 +11,12 @@ Before(function () {
     cy.intercept("PUT", "/api/v1/users/*").as("putRequest")
 })
 
-After(function () {
-    cy.deleteUserApi(user.id)
-})
-
 Before({ tags: "@emailJaExistente" }, function () {
     cy.intercept("POST", "/api/v1/users").as("criarUsuario")
+})
+
+After(function () {
+    cy.deleteUserApi(user.id)
 })
 
 After({ tags: "@emailJaExistente" }, function () {
@@ -41,38 +41,6 @@ Given('clico no botão de salvar', function () {
     pageDetalhesUsuario.getButtonSalvar().click()
 })
 
-When('deixo os campos de email e nome em branco', function () {
-    pageDetalhesUsuario.limparCampoEmail()
-    pageDetalhesUsuario.limparCampoNome()
-})
-
-Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatório', function () {
-    cy.contains("O campo nome é obrigatório.").should("exist")
-    cy.contains("O campo e-mail é obrigatório.").should("exist")
-})
-
-When('deixo o campo de nome vazio', function () {
-    cy.get(pageDetalhesUsuario.inputName).clear()
-})
-
-Then('não deve ser feita uma requisição à API', function () {
-    cy.get("@putRequest").should("not.exist")
-})
-
-Then('deve aparecer uma mensagem informando que o campo de nome é obrigatório', function () {
-    cy.contains("O campo nome é obrigatório.").should("exist")
-    cy.contains("O campo e-mail é obrigatório.").should("not.exist")
-})
-
-When('passo um nome contendo menos de 4 caracteres no campo de nome', function () {
-    pageDetalhesUsuario.limparCampoNome()
-    pageDetalhesUsuario.digitarCampoNome("abc")
-})
-
-Then('deve aparecer a mensagem {string}', function (mensagem) {
-    cy.contains(mensagem).should("exist")
-})
-
 Given('passo um nome contendo mais de 100 caracteres no campo de nome', function () {
     let valorNome = ""
     while (valorNome.length < 101) {
@@ -81,6 +49,27 @@ Given('passo um nome contendo mais de 100 caracteres no campo de nome', function
 
     pageDetalhesUsuario.limparCampoNome()
     pageDetalhesUsuario.digitarCampoNome(valorNome)
+})
+
+Given('que eu tenha o email de outro usuário que já existe', function () {
+    cy.createUserApi().then(function (body) {
+        usuarioCriadoPreviamente = body
+    })
+})
+
+
+When('deixo os campos de email e nome em branco', function () {
+    pageDetalhesUsuario.limparCampoEmail()
+    pageDetalhesUsuario.limparCampoNome()
+})
+
+When('deixo o campo de nome vazio', function () {
+    cy.get(pageDetalhesUsuario.inputName).clear()
+})
+
+When('passo um nome contendo menos de 4 caracteres no campo de nome', function () {
+    pageDetalhesUsuario.limparCampoNome()
+    pageDetalhesUsuario.digitarCampoNome("abc")
 })
 
 When('passo um nome contendo números no campo de nome', function () {
@@ -121,15 +110,33 @@ When('passo um email sem conter o ".com" ou ".*" ao final', function () {
     pageDetalhesUsuario.digitarCampoEmail("email@gmail")
 })
 
-Given('que eu tenha o email de outro usuário que já existe', function () {
-    cy.createUserApi().then(function (body) {
-        usuarioCriadoPreviamente = body
-    })
-})
-
 When('passo o email do outro usuário já existente para o campo de email', function () {
     pageDetalhesUsuario.limparCampoEmail()
     pageDetalhesUsuario.digitarCampoEmail(usuarioCriadoPreviamente.email)
+})
+
+When('clico no botão de cancelar da modal de erro', function () {
+    cy.get("[aria-modal='true'] button").contains("Cancelar").click()
+})
+
+
+
+Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatório', function () {
+    cy.contains("O campo nome é obrigatório.").should("exist")
+    cy.contains("O campo e-mail é obrigatório.").should("exist")
+})
+
+Then('não deve ser feita uma requisição à API', function () {
+    cy.get("@putRequest").should("not.exist")
+})
+
+Then('deve aparecer uma mensagem informando que o campo de nome é obrigatório', function () {
+    cy.contains("O campo nome é obrigatório.").should("exist")
+    cy.contains("O campo e-mail é obrigatório.").should("not.exist")
+})
+
+Then('deve aparecer a mensagem {string}', function (mensagem) {
+    cy.contains(mensagem).should("exist")
 })
 
 Then('deve aparecer uma modal com o título sendo {string}', function (titulo) {
@@ -142,10 +149,6 @@ Then('a modal deve conter um botão de cancelar', function () {
 
 Then('a modal deve conter um botão com um x', function () {
     cy.get("[aria-modal='true'] button").contains("x").should("exist")
-})
-
-When('clico no botão de cancelar da modal de erro', function () {
-    cy.get("[aria-modal='true'] button").contains("Cancelar").click()
 })
 
 Then('a modal deve ser fechada', function () {
