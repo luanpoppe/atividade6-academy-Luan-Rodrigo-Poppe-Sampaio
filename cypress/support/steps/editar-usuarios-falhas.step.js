@@ -1,4 +1,4 @@
-import { Given, When, Then, Before, After } from "cypress-cucumber-preprocessor/steps"
+import { Given, When, Then, Before, After } from "@badeball/cypress-cucumber-preprocessor"
 import { DetalhesUsuario } from "../pages/detalhes-usuario"
 
 let user
@@ -116,7 +116,7 @@ When('passo um email sem caracteres após o símbolo de @ para o campo de email'
     pageDetalhesUsuario.digitarCampoEmail("email@")
 })
 
-When('passo um email sem caracteres após o símbolo de @ para o campo de email', function () {
+When('passo um email sem conter o ".com" ou ".*" ao final', function () {
     pageDetalhesUsuario.limparCampoEmail()
     pageDetalhesUsuario.digitarCampoEmail("email@gmail")
 })

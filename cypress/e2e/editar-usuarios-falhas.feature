@@ -78,7 +78,7 @@ Funcionalidade: Validações da edição de usuário
 
     Cenário: Não deve ser possível editar usuário com um email sem conter o ".com" ou ".*" ao final
         E que cliquei no botão de editar
-        Quando passo um email sem caracteres após o símbolo de @ para o campo de email
+        Quando passo um email sem conter o ".com" ou ".*" ao final
         E clico no botão de salvar
         Então deve aparecer a mensagem "Formato de e-mail inválido"
         E não deve ser feita uma requisição à API
