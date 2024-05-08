@@ -108,7 +108,7 @@ When('clico no botão de cancelar da modal de erro', function () {
 })
 
 
-Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatório', function () {
+Then('deve aparecer as mensagens informando que os campos de nome e email são obrigatórios', function () {
     cy.contains("O campo nome é obrigatório.").should("exist")
     cy.contains("O campo e-mail é obrigatório.").should("exist")
 })

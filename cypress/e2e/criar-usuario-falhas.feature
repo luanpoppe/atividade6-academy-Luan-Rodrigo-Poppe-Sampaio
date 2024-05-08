@@ -1,6 +1,5 @@
 # language: pt
 
-@criarUsuarioFile
 Funcionalidade: Validação ao criar usuários
 
     Contexto: Acessar a página de cadastro de usuários
@@ -9,7 +8,7 @@ Funcionalidade: Validação ao criar usuários
     Cenário: Não deve ser possível cadastrar usuário sem um nome nem email
         E que não digito nada no campo de nome e no de email
         Quando clico no botão de cadastrar usuário
-        Então deve aparecer as mensagens informando que os campos de nome e email são obrigatório
+        Então deve aparecer as mensagens informando que os campos de nome e email são obrigatórios
         E não deve aparecer uma mensagem de sucesso
 
     Cenário: Não deve ser possível cadastrar usuário sem passar um valor no campo de nome
