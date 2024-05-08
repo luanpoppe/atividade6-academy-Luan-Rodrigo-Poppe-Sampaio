@@ -2,7 +2,7 @@
 
 Funcionalidade: Criar usuários
     
-    Cenário: Botão de voltar do header funciona como esperado
+    Cenário: Botão de voltar do header deve redirecionar à página inicial do site
         Dado que visitei a página de cadastrar usuários
         Quando clico no botão de voltar do header
         Então o usuário deverá ser redirecionado à página inicial do site
@@ -13,7 +13,7 @@ Funcionalidade: Criar usuários
         E clico no botão de cadastrar
         Então Deverá aparecer uma mensagem na tela com o texto "Usuário salvo com sucesso!"
 
-    Cenário: Usuário cadsatrado existe no banco de dados
+    Cenário: Usuário cadastrado deve existir no banco de dados
         Dado que visitei a página de cadastrar usuários
         Quando realizo o cadastro de um usuário pelo site
         E faço uma consulta à API pelos usuários cadastrados

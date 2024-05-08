@@ -19,47 +19,29 @@ Given("que visitei a página inicial", function () {
     cy.visit('/')
 })
 
-Given('que há 06 usuários cadastrados', function () {
-    cy.intercept("GET", "api/v1/users", {
-        fixture: "get-usuarios/get-6-usuarios.json"
-    }).as("getUsers")
-
-    cy.wait("@getUsers")
+When('visito a página inicial', function () {
+    cy.visit('/')
 })
 
-Given('que há 18 usuários cadastrados', function () {
+Given('que há {int} usuários cadastrados', function (numero) {
     cy.intercept("GET", "api/v1/users", {
-        fixture: "get-usuarios/get-18-usuarios.json"
+        fixture: `get-usuarios/get-${numero}-usuarios.json`
     }).as("getUsers")
-
-    cy.wait("@getUsers")
 })
 
-Given('que há 03 usuários cadastrados', function () {
-    cy.intercept("GET", "api/v1/users", {
-        fixture: "get-usuarios/get-3-usuarios.json"
-    }).as("getUsers")
-
-    cy.wait("@getUsers")
-})
-
-Given('que não há usuários cadsatrados', function () {
+Given('que não há usuários cadastrados', function () {
     cy.intercept("GET", "api/v1/users", {
         body: []
     }).as("getUsers")
-
-    cy.wait("@getUsers")
 })
 
 Given('que há mais de 06 usuários cadastrados', function () {
     cy.intercept("GET", "api/v1/users", {
         fixture: "get-usuarios/get-18-usuarios.json"
     }).as("getUsers")
-
-    cy.wait("@getUsers")
 })
 
-Given('que estou na página 02', function () {
+Given('acesso a página 02', function () {
     nextPage()
 })
 
@@ -131,7 +113,7 @@ Then('a página deverá ter um título com o texto {string}', function (texto) {
     cy.get("h3").should('have.text', texto)
 })
 
-Then('a apágina deverá ter um botão com o texto {string}', function (texto) {
+Then('a página deverá ter um botão com o texto {string}', function (texto) {
     const cadastrarNovoUsuario = "[href='/users/novo']"
 
     cy.get(".sc-koXPp.csBRDe " + cadastrarNovoUsuario + " p").should('have.text', texto)
@@ -192,10 +174,10 @@ Then('os usuários mostrados deverão ser os corretos da página 01', function (
     })
 })
 
-Then('deverei ser redirecionado à página inicial', function () {
+Then('devo ser redirecionado à página inicial', function () {
     cy.url().should("equal", baseUrl + "/users")
 })
 
-Then('deverei ser redirecionado à página de cadastrar usuários', function () {
+Then('devo ser redirecionado à página de cadastrar usuários', function () {
     cy.url().should("equal", baseUrl + "/users/novo")
 })

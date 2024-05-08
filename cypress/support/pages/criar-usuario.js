@@ -3,9 +3,6 @@ export class CriarUsuario {
     inputEmail = "#email"
     buttonSalvar = "button[type='submit']"
 
-    // divErroNome
-    // divErroEmail
-
     buttonHome = "[href='/']"
     buttonVoltar = "[href='/users']"
 

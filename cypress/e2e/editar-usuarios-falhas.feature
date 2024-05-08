@@ -2,7 +2,7 @@
 
 Funcionalidade: Validações da edição de usuário
 
-    Contexto:
+    Contexto: Acesso a página de detalhes de um usuário
             Dado que existe um usuário
             E que acessei a página de detalhes deste usuário
 
@@ -95,7 +95,7 @@ Funcionalidade: Validações da edição de usuário
         E deve aparecer a mensagem "Este e-mail já é utilizado por outro usuário."
 
     @emailJaExistente
-    Cenário: O botão de cancelar na modal que informa que já existe um usuário cadastrado com o email em questão deve fechar a modal ao ser clicado
+    Cenário: O botão de cancelar na modal que informa que já existe um usuário cadastrado deve fechar a modal ao ser clicado
         E que eu tenha o email de outro usuário que já existe
         E que cliquei no botão de editar
         Quando passo o email do outro usuário já existente para o campo de email
@@ -105,7 +105,7 @@ Funcionalidade: Validações da edição de usuário
         E devo continuar na página de detalhes do usuário sendo editado
 
     @emailJaExistente
-    Cenário: O botão de "x" no canto da modal que informa que já existe um usuário cadastrado com o email em questão deve fechar a modal ao ser clicado
+    Cenário: O botão de "x" no canto da modal que informa que já existe um usuário cadastrado deve fechar a modal ao ser clicado
         E que eu tenha o email de outro usuário que já existe
         E que cliquei no botão de editar
         Quando passo o email do outro usuário já existente para o campo de email

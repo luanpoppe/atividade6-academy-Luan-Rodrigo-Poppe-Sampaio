@@ -46,7 +46,7 @@ Funcionalidade: Validação ao criar usuários
         Então deve aparecer a mensagem "Formato do nome é inválido."
         E não deve aparecer uma mensagem de sucesso
 
-    Cenário: Não deve ser possível cadastrar usuário sem passar nada no campo de email
+    Cenário: Não deve ser possível cadastrar usuário sem passar um valor no campo de email
         E que digito um nome válido
         E que não digito nada no campo de email
         Quando clico no botão de cadastrar usuário
@@ -67,7 +67,7 @@ Funcionalidade: Validação ao criar usuários
         Então deve aparecer a mensagem "Formato de e-mail inválido"
         E não deve aparecer uma mensagem de sucesso
 
-    Cenário: Não deve ser possível cadastrar usuário sem escrever caracteres após o @
+    Cenário: Não deve ser possível cadastrar usuário sem escrever caracteres após o @ no campo de email
         E que digito um nome válido
         E que digito um email sem caracteres após o símbolo de @
         Quando clico no botão de cadastrar usuário
@@ -93,7 +93,7 @@ Funcionalidade: Validação ao criar usuários
         E deve aparecer a mensagem "Este e-mail já é utilizado por outro usuário."
 
     @emailJaExistente
-    Cenário: O botão de cancelar na modal que informa que já existe um usuário cadastrado com o email em questão deve fechar a modal ao ser clicado
+    Cenário: O botão de cancelar na modal que informa que já existe um usuário cadastrado deve fechar a modal ao ser clicado
         E que eu tenha o email de um usuário que já existe
         E que digito um nome válido
         E que digito o email do usuário que já existe
@@ -103,7 +103,7 @@ Funcionalidade: Validação ao criar usuários
         E devo continuar na página de cadastrar novo usuário
 
     @emailJaExistente
-    Cenário: O botão de "x" no canto da modal que informa que já existe um usuário cadastrado com o email em questão deve fechar a modal ao ser clicado
+    Cenário: O botão de "x" no canto da modal que informa que já existe um usuário cadastrado deve fechar a modal ao ser clicado
         E que eu tenha o email de um usuário que já existe
         E que digito um nome válido
         E que digito o email do usuário que já existe

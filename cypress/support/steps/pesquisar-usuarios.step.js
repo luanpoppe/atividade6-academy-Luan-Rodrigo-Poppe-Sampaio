@@ -26,7 +26,7 @@ Given('que acessei a página inicial do site', function () {
     cy.visit("/")
 })
 
-Given('não digitei nada no campo de pesquisa', function () {
+Given('não digito nada no campo de pesquisa', function () {
 
 })
 
@@ -37,6 +37,10 @@ Given('que fiz uma pesquisa utilizando o campo de pesquisa', function () {
     cy.get("@getTodosUsuarios").should("not.exist")
 })
 
+
+When('acesso a página inicial do site', function () {
+    cy.visit("/")
+})
 
 When('faço uma pesquisa utilizando o campo de pesquisa', function () {
     paginaInicial.pesquisarUsuario("aa")

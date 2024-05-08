@@ -23,10 +23,6 @@ Given('acesso a página de detalhes deste usuário', function () {
     cy.visit("/users/" + user.id)
 })
 
-Given('que cliquei no botão de editar', function () {
-    pageDetalhesUsuario.getButtonEditar().click()
-})
-
 Given('que modifiquei os valores dos campos de nome e email', function () {
 
     cy.get(pageDetalhesUsuario.inputEmail).type("adicionadoAoEmail")
